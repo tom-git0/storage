@@ -1,0 +1,94 @@
+# storage
+tom的小仓库（storage）
+# -*- coding: utf-8 -*-
+""" 继承中的__init__ 主要有三种情况：接下来分别讨论"""
+
+
+# 第一种 ：继承后，子类没有定义初始化函数  ：父类的初始化会被默认调用
+# 第二种 ：继承后，子类定义了初始化，但是没有调用父类的初始化，这个时候父类的初始化不会被调用
+# 第三种 ：继承后，子类定义初始化，也调用了父类的初始化，这个时候子类和父类的初始化都会被调用
+
+
+""" 第一种情况 ：继承后，子类没有定义初始化函数  ：父类的初始化会被默认调用"""
+
+
+# 定义父类：Parent
+class Parent(object):
+    def __init__(self, name):
+        self.name = name
+        print("创建:", self.__class__.__name__)
+        print("name属性是:", self.name)
+
+
+# 定义子类Child ，继承父类Parent
+class Child(Parent):
+    pass
+
+
+# 子类实例化时，由于子类没有初始化，此时父类的初始化函数就会默认被调用
+# 且必须传入父类的参数name，所以我这里调用子类，但是传的参数是父类的
+b = Child("init Child")
+
+# 如果没有传入父类的参数这个函数就会报错
+# c = Child()
+
+"""第二种情况 ：继承后，初始化子类，而在子类中没有显示调用父类的初始化函数，则父类的属性不会被初始化 """
+# 定义父类：Parent1
+class Parent_1(object):
+
+    # 这里是实力属性
+    def __init__(self, name):
+        self.name = name
+        print("创建:", self.__class__.__name__)
+        print("name属性是:", self.name)
+
+
+# 定义子类Child_1 ，继承父类Parent
+class Child_1(Parent_1):
+
+    def __init__(self):
+        print('初始化了子类')
+
+
+# 这里子类初始化了，但是这里在初始化子类的时候，并没有显示父类的实例化
+# 然后通过实例属性调用父类实例属性报错
+# c = Child_1
+# print(c.name)
+# 这里有个重点补充：首先实例属性，只能通过实例调用，但是这里父类没有初始化，所以是调用不了它的！
+
+
+""" 3、如果子类定义了自己的初始化函数，显示调用父类，子类和父类的属性都会被初始化 """
+
+
+class Parent_2(object):
+
+    def __init__(self, name):
+        self.name = name
+        print("创建:", self.__class__.__name__)
+        print("name属性是:", self.name)
+
+
+class Child_2(Parent_2):
+
+    def __init__(self,name):
+        # print("call __init__ from Child class")
+        super(Child_2,self).__init__(name)   # 要将子类Child和self传递进去
+
+
+# 这里直接实例化调用父类，没有子类啥事情正常传参调用就OK了！
+print('--'*20)
+d = Parent_2('tom000')
+
+
+# 这里通过子类调用父类属性，传参调用父类
+print('--'*20)
+c = Child_2('madison')
+print(c.name)
+
+
+# super()的作用
+# super主要来调用父类方法来显示调用父类（这句话很重要，调用和显示这是super的主要功能），
+# 在子类中，一般会定义与父类相同的属性（数据属性，方法），从而来实现子类特有的行为，这里叫重写，重写后，如果
+# 此时我还想要调用父类的方法，就要用到super方法来调用！
+
+# 也就是说，子类会继承父类的所有的属性和方法，子类也可以覆盖父类同名的属性和方法。
